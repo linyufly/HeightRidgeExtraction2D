@@ -22,13 +22,17 @@ double dot_product(double x1, double y1, double x2, double y2) {
   return x1 * x2 + y1 * y2;
 }
 
+double dot_product(double *v1, double *v2) {
+  return v1[0] * v2[0] + v1[1] * v2[1];
+}
+
 double partial_x(double **scalar_field, int nx, int ny, int x, int y, double dx, double dy) {
   int x_1 = (x > 0) ? x - 1 : x;
   int x_2 = (x < nx - 1) ? x + 1 : x;
   return (scalar_field[x_2][y] - scalar_field[x_1][y]) / (dx * (x_2 - x_1));
 }
 
-double partial_y(double **scalar_field, int nx, int ny, int x, int ny, double dx, double dy) {
+double partial_y(double **scalar_field, int nx, int ny, int x, int y, double dx, double dy) {
   int y_1 = (y > 0) ? y - 1 : y;
   int y_2 = (y < ny - 1) ? y + 1 : y;
   return (scalar_field[x][y_2] - scalar_field[x][y_1]) / (dy * (y_2 - y_1));
@@ -112,7 +116,7 @@ void HeightRidgeExtractor2D::extract_ridges(
 
   for (int x = 0; x + 1 < nx; x++) {
     for (int y = 0; y + 1 < ny; y++) {
-      double directions[4][2];
+      double **directions = create_matrix<double>(4, 2);
       int count = 0;
 
       bool trimmed = false;
@@ -153,6 +157,7 @@ void HeightRidgeExtractor2D::extract_ridges(
       }
 
       delete [] pca;
+      delete_matrix(directions);
 
       int local_indices[4][2];
       double scalars[4];
@@ -178,7 +183,7 @@ void HeightRidgeExtractor2D::extract_ridges(
           double y_2 = origin[1] + spacing[1] * (y + local_indices[curr][1]);
 
           double x_itx = linear_interpolation(scalars[curr], scalars[next], x_1, x_2);
-          double y_itr = linear_interpolation(scalars[curr], scalars[next], y_1, y_2);
+          double y_itx = linear_interpolation(scalars[curr], scalars[next], y_1, y_2);
 
           int dx_1 = local_indices[curr][0];
           int dy_1 = local_indices[curr][1];
@@ -235,7 +240,7 @@ void HeightRidgeExtractor2D::extract_ridges(
     if (point_link[p].size() == 1) {
       std::vector<std::pair<double, double> > path;
       for (int curr = p; curr != -1; ) {
-        path.push_back(edge_points[curr].first, edge_points[curr].second);
+        path.push_back(std::pair<double, double>(edge_points[curr].first, edge_points[curr].second));
         used[curr] = true;
 
         curr = -1;
@@ -259,7 +264,7 @@ void HeightRidgeExtractor2D::extract_ridges(
 
     std::vector<std::pair<double, double> > path;
     for (int curr = p; curr != -1; ) {
-      path.push_back(edge_points[curr].first, edge_points[curr].second);
+      path.push_back(std::pair<double, double>(edge_points[curr].first, edge_points[curr].second));
       used[curr] = true;
 
       curr = -1;
