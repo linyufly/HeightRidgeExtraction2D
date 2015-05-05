@@ -11,7 +11,7 @@ class HeightRidgeExtractor2D {
   static void extract_ridges(
       int *dimensions, double *spacing, double *origin,
       double **scalar_field,
-      std::vector<std::pair<double, double> > *ridges);
+      std::vector<std::vector<std::pair<double, double> > > *ridges);
 };
 
 #endif  // HEIGHT_RIDGE_EXTRACTOR_2D_H_
