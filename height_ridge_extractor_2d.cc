@@ -12,7 +12,7 @@
 
 namespace {
 
-const double kEigenValueThreshold = -100.0;
+const double kEigenValueThreshold = -25000.0;
 
 double linear_interpolation(double s1, double s2, double x1, double x2) {
   return (x2 - x1) * -s1 / (s2 - s1) + x1;
@@ -191,8 +191,8 @@ void HeightRidgeExtractor2D::extract_ridges(
           double y_itx = linear_interpolation(scalars[curr], scalars[next], y_1, y_2);
 
           /// DEBUG ///
-          printf("%lf %lf, (x1, y1): (%lf, %lf), (x2, y2): (%lf, %lf), (x_itx, y_itx): (%lf, %lf)\n",
-                 scalars[curr], scalars[next], x_1, y_1, x_2, y_2, x_itx, y_itx);
+          // printf("%lf %lf, (x1, y1): (%lf, %lf), (x2, y2): (%lf, %lf), (x_itx, y_itx): (%lf, %lf)\n",
+          //        scalars[curr], scalars[next], x_1, y_1, x_2, y_2, x_itx, y_itx);
 
           int dx_1 = local_indices[curr][0];
           int dy_1 = local_indices[curr][1];
